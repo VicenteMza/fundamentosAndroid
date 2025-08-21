@@ -19,14 +19,33 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
         val numeroIntroducido: EditText = findViewById(R.id.entradaValor)
         val miboton: Button = findViewById(R.id.button)
         val mensajeSalida: TextView = findViewById(R.id.salidaMensaje)
+        var numeroAleatorio = (1..100).random()
+        //mensajeSalida.text = numeroAleatorio.toString()
 
-        miboton.setOnClickListener(){
+        var intentos= 0
+        fun resetGame() {
+            numeroAleatorio = (1..100).random() // Generate a new random number
+            intentos = 0 // Reset attempts
+            numeroIntroducido.text.clear() // Clear input field
+            mensajeSalida.text = "Adivina un nuevo número!" // Clear output message
+        }
+
+        miboton.setOnClickListener {
             val valorIntroducido = numeroIntroducido.text.toString().toInt()
-            if (valorIntroducido >= 50) mensajeSalida.text= "El numero es mayor que 50"
-            else mensajeSalida.text= "El numero es menor que 50"
+            intentos++
+
+            while(numeroAleatorio != valorIntroducido){
+
+            }
+
+            if (numeroAleatorio > valorIntroducido) mensajeSalida.text = "Más alto"
+            else if (numeroAleatorio < valorIntroducido) mensajeSalida.text = "Más bajo"
+            else mensajeSalida.text = "Correcto. Lo has conseguido en $intentos intentos."
         }
     }
 }

@@ -8,8 +8,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+    var nuevoIntento=false //flag para controlar los nuevos intentos
+    var valorIntroducido=0 //almacenar valor introducido por el usuario
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,9 +33,10 @@ class MainActivity : AppCompatActivity() {
         val miboton: Button = findViewById(R.id.button)
         val mensajeSalida: TextView = findViewById(R.id.salidaMensaje)
         var numeroAleatorio = (1..100).random()
-        //mensajeSalida.text = numeroAleatorio.toString()
 
         var intentos= 0
+
+        //implemetar la funcionalidad para resetar el juego
         fun resetGame() {
             numeroAleatorio = (1..100).random() // Generate a new random number
             intentos = 0 // Reset attempts
@@ -36,16 +45,29 @@ class MainActivity : AppCompatActivity() {
         }
 
         miboton.setOnClickListener {
-            val valorIntroducido = numeroIntroducido.text.toString().toInt()
-            intentos++
+//            val valorIntroducido = numeroIntroducido.text.toString().toInt()
+//            intentos++
+//
+//            if (numeroAleatorio > valorIntroducido) mensajeSalida.text = "Más alto"
+//            else if (numeroAleatorio < valorIntroducido) mensajeSalida.text = "Más bajo"
+//            else mensajeSalida.text = "Correcto. Lo has conseguido en $intentos intentos."
+            valorIntroducido = numeroIntroducido.text.toString().toInt()
+            nuevoIntento=true //marcamos que el usuario ha echo un nuevo intento
 
-            while(numeroAleatorio != valorIntroducido){
+        }
 
+        GlobalScope.launch (Dispatchers.Main){
+            while (numeroAleatorio!=valorIntroducido){
+                if (nuevoIntento){
+                    intentos++
+                    if (numeroAleatorio<valorIntroducido) mensajeSalida.text="Mas bajo"
+                    else if (numeroAleatorio>valorIntroducido) mensajeSalida.text="Mas alto"
+
+                    nuevoIntento=false //reseteara el flag de intentos
+                }
+                delay(500)
             }
-
-            if (numeroAleatorio > valorIntroducido) mensajeSalida.text = "Más alto"
-            else if (numeroAleatorio < valorIntroducido) mensajeSalida.text = "Más bajo"
-            else mensajeSalida.text = "Correcto. Lo has conseguido en $intentos intentos."
+            mensajeSalida.text="lo has consiguido en $intentos intentos"
         }
     }
 }
